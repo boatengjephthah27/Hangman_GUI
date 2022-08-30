@@ -1,5 +1,5 @@
 from tkinter import *
-import random as ran
+import random as ran, json
 from tkinter import messagebox
 
 
@@ -16,86 +16,112 @@ color = "#F7F6DC"
 
 
 
-
-
 # *********************************************** FUNCTIONS ********************************************
 
 
 
-def check():
-    with open("words.txt", "r") as game_words:
-        words = game_words.read().split(" , ")
-        secret_word = (ran.choice(words)).lower()
-        word_length = len(secret_word)
-        list_ = []
-        outword = ""
-        
-        for i in range(word_length):
-            list_.append("_")
-        
-        for w in list_:
-            outword += f"{w} "
-            
-        canvas.itemconfigure(word, text=outword)        
-            
-            
-        game_end = False
-        lives = 6
-        
-        while not game_end:
+# def s_word():
+
+
+
+# creating and storing words in json
+
+
+def s_word():
+    game_words = open("words.txt", "r")
+    words = game_words.read().split(" , ")
+
+    global secret_word
+    secret_word = (ran.choice(words)).lower()
     
-            user_guess = text.get()
+    with open("data/count_file.json","w") as file:
+            file_dict = {
+                "lives" : 5,
+                "secret_word" : secret_word,
+                "wc" : secret_word
+            }
+            json.dump(file_dict, file, indent=1)
 
 
-            if user_guess in list_:
-                messagebox.showwarning(f"Your guess ' {user_guess} ' is already in the list!")
 
 
-            for letter_position in range(word_length):
-                letter = secret_word[letter_position] 
-                if letter == user_guess:
-                    list_[letter_position] = letter 
-                    text.delete(0, END)
-                    
-            canvas.itemconfigure(word, text=list_)
 
-
-            if user_guess not in secret_word:
-                print(f"\nYour guess {user_guess} is not in the word, \nYou lose a life")
-                lives -= 1
-                if lives == 5:
-                    for columns in g.at5:
-                        print(columns, end="")
-                        t.sleep(0.002)
-                elif lives == 4:
-                    for columns in g.at4:
-                        print(columns, end="")
-                        t.sleep(0.002)
-                elif lives == 3:
-                    for columns in g.at3:
-                        print(columns, end="")
-                        t.sleep(0.002)
-                elif lives == 2:
-                    for columns in g.at2:
-                        print(columns, end="")
-                        t.sleep(0.002)
-                elif lives == 1:
-                    for columns in g.at1:
-                        print(columns, end="")
-                        t.sleep(0.002)
-                elif lives == 0:
-                    game_end = True
-                    for columns in g.at0:
-                        print(columns, end="")
-                        t.sleep(0.002)
-                    print(f"The word was {secret_word}!")
-                    print("\nSorry, You are out of lives. \nYou lose!\n")
-
-            if "_" not in list_:
-                game_end = True
-                print(f"\nThe word is {secret_word}!")
-                print("\nYou won!\n")
+def check():
+    
+    with open("data/count_file.json","r") as file:
+        data_file = json.load(file)
+        lives = int(data_file["lives"]) 
+        secret_word = data_file["secret_word"] 
+        wc = data_file["wc"] 
+        # data_file.update(file_dict)
             
+                
+    word_length = len(secret_word)
+    list_ = []
+    outword = ""
+    
+    for i in range(word_length):
+        list_.append("_")
+    
+    with open("data/count_file.json","r") as file:
+        data_file = json.load(file)
+        file_dict = {"wc" : list_ } 
+        data_file.update(file_dict)
+    
+    for w in file_dict:
+        outword += f"{w} "
+        
+    canvas.itemconfigure(word, text=outword)        
+        
+    # lives = 5
+    
+    user_guess = text.get()
+
+
+    if user_guess in list_:
+        messagebox.showwarning(f"Your guess ' {user_guess} ' is already in the list!")
+
+
+    for letter_position in range(word_length):
+        letter = secret_word[letter_position] 
+        if letter == user_guess:
+            list_[letter_position] = letter 
+            text.delete(0, END)
+    
+    
+    
+    outword = ""
+        
+    for w in list_:
+        outword += f"{w} "
+        
+    canvas.itemconfigure(word, text=list_)
+
+
+    if user_guess not in secret_word:
+        # print(f"\nYour guess {user_guess} is not in the word, \nYou lose a life")
+        lives -= 1
+        
+        with open("data/count_file.json","r") as file:
+            data_file = json.load(file)
+            file_dict = {"lives" : lives } 
+            data_file.update(file_dict)
+        
+        if lives == 4:
+            canvas.itemconfigure(himg, image=img1)
+        elif lives == 3:
+            canvas.itemconfigure(himg, image=img2)
+        elif lives == 2:
+            canvas.itemconfigure(himg, image=img3)
+        elif lives == 1:
+            canvas.itemconfigure(himg, image=img4)
+        elif lives == 0:
+            canvas.itemconfigure(himg, image=img5)
+            messagebox.showinfo(f"The word was {secret_word}!\nSorry, You are out of lives. \nYou lose!\n")
+
+    if "_" not in list_:
+        messagebox.showinfo(f"\nThe word is {secret_word}!\nYou won!\n")
+        
 
 
 
@@ -127,7 +153,7 @@ canvas.grid(row=0, column=0)
 
 # loading all images
 
-img0 = PhotoImage(file='images/p1.png')
+img0 = PhotoImage(file='images/p0.png')
 img1 = PhotoImage(file='images/p1.png')
 img2 = PhotoImage(file='images/p2.png')
 img3 = PhotoImage(file='images/p3.png')
@@ -135,14 +161,14 @@ img4 = PhotoImage(file='images/p4.png')
 img5 = PhotoImage(file='images/p5.png')
 
 
-canvas.create_image(
+himg = canvas.create_image(
     200,150,
-    image=img5
+    image=img0
 )
 
 word = canvas.create_text(
     200,280,
-    text="---------------",
+    text="",
     font=("arial", 28, "bold"),
     fill='white'
 )
@@ -172,6 +198,15 @@ submit = Button(
     command=check
 )
 submit.grid(row=3, column=0)
+
+
+
+
+
+
+s_word()
+
+
 
 
 
