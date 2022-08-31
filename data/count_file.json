@@ -1,11 +1,1 @@
-{
- "lives": 5,
- "secret_word": "aster",
- "wc": [
-  "_",
-  "_",
-  "_",
-  "_",
-  "_"
- ]
-}
+{"lives": 4, "secret_word": "bedlam", "wc": ["b", "e", "d", "l", "a", "m"]}

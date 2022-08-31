@@ -58,7 +58,7 @@ def win():
         text="Play Again!",
         padx=4,
         pady=4,
-        command=pAgain
+        command=pAgainw
     )
     pg.grid(row=2, column=0)
 
@@ -67,7 +67,7 @@ def win():
         text="Quit!",
         padx=4,
         pady=4,
-        command=endit
+        command=enditw
 
     )
     qg.grid(row=2, column=1)
@@ -136,18 +136,22 @@ def pAgain():
     canvas.itemconfigure(word, text="")
     text.delete(0, END)
     s_word()
-    
-    if win:
-        appp.quit()
-    else:    
-        ap.quit()
-    
-    
+    ap.destroy()
 
+def pAgainw():
+    canvas.itemconfigure(himg, image=img0)
+    canvas.itemconfigure(word, text="")
+    text.delete(0, END)
+    s_word()
+    appp.destroy()
+    
 
 
 def endit():
-    app.quit()
+    app.destroy()
+
+def enditw():
+    app.destroy()
     
     
 
