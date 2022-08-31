@@ -14,7 +14,7 @@ appp.config(
 
 canv = Canvas(
     width=270,
-    height=250,
+    height=230,
 )
 canv.grid(row=0, column=0, columnspan=2)
 
@@ -26,8 +26,41 @@ canv.create_image(
 )
 
 lab = Label(
-    text= f"You Genius!\nThe word is <  >,You won!\nDo you want to play again?"
+    text= f"You Won",
+    font=("courier", 28, "bold"),
+    pady=10,
+    fg="red"
 )
+lab.grid(row=1, column=0, columnspan=2)
+
+pg = Button(
+    text="Play Again!",
+    padx=4,
+    pady=4
+)
+pg.grid(row=2, column=0)
+
+
+qg = Button(
+    text="Quit!",
+    padx=4,
+    pady=4
+)
+qg.grid(row=2, column=1)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 appp.mainloop()
