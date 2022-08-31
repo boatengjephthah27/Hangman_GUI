@@ -101,8 +101,12 @@ def lose():
         image=imgg
     )
 
+    with open("data/count_file.json","r") as file:
+        data_file = json.load(file)
+        secret_word = data_file["secret_word"] 
+        
     lab = Label(ap,
-        text= f"You Lost!",
+        text= f"You Lost!\n'{secret_word}'",
         font=("courier", 28, "bold"),
         pady=10,
         fg="black"
