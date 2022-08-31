@@ -25,6 +25,7 @@ color = "#F7F6DC"
 
 
 def win():
+    global appp
     appp = Toplevel(app)
     appp.title("You won!")
     appp.config(
@@ -56,7 +57,8 @@ def win():
     pg = Button(appp,
         text="Play Again!",
         padx=4,
-        pady=4
+        pady=4,
+        command=pAgain
     )
     pg.grid(row=2, column=0)
 
@@ -64,7 +66,9 @@ def win():
     qg = Button(appp,
         text="Quit!",
         padx=4,
-        pady=4
+        pady=4,
+        command=endit
+
     )
     qg.grid(row=2, column=1)
 
@@ -74,6 +78,75 @@ def win():
 
 
 
+
+def lose():
+    global ap
+    ap = Toplevel(app)
+    ap.title("You Lost!")
+    ap.config(
+        padx=15,
+        pady=15,
+    )
+
+    canv = Canvas(ap,
+        width=270,
+        height=160,
+    )
+    canv.grid(row=0, column=0, columnspan=2)
+
+
+    imgg = PhotoImage(file="images/lose.png")
+    canv.create_image(
+        130,95,
+        image=imgg
+    )
+
+    lab = Label(ap,
+        text= f"You Lost!",
+        font=("courier", 28, "bold"),
+        pady=10,
+        fg="black"
+    )
+    lab.grid(row=1, column=0, columnspan=2)
+
+    pg = Button(ap,
+        text="Play Again!",
+        padx=4,
+        pady=4,
+        command=pAgain
+    )
+    pg.grid(row=2, column=0)
+
+
+    qg = Button(ap,
+        text="Quit!",
+        padx=4,
+        pady=4,
+        command=endit
+    )
+    qg.grid(row=2, column=1)
+
+
+    ap.mainloop()
+
+
+
+def pAgain():
+    canvas.itemconfigure(himg, image=img0)
+    canvas.itemconfigure(word, text="")
+    text.delete(0, END)
+    s_word()
+    appp.quit()
+    ap.quit()
+    
+    
+
+
+
+def endit():
+    app.quit()
+    
+    
 
 def s_word():
     game_words = open("words.txt", "r")
@@ -94,8 +167,6 @@ def s_word():
                 "wc" : list__
             }
             json.dump(file_dict, file, indent=1)
-
-    # check()
 
 
 
@@ -119,21 +190,16 @@ def check():
             
         user_guess = text.get()
         
-        if user_guess in wc:
-            messagebox.showwarning(f"Your guess ' {user_guess} ' is already in the list!")
+        # if user_guess in wc:
+        #     messagebox.showwarning(f"Your guess ' {user_guess} ' is already in the list!")
         
-        # user = 'w'
         wl = len(secret_word)
         
         for letter_position in range(wl):
             letter = secret_word[letter_position] 
             if letter == user_guess:
                 wc[letter_position] = letter 
-        
-        # canvas.itemconfigure(word, text=outword)
-              
-        # print(outword)
-        # print(wc)
+                
     
     outword = ""
     
@@ -150,7 +216,6 @@ def check():
         
     
     if user_guess not in [a for a in secret_word]:
-        # print(f"\nYour guess {user} is not in the word, \nYou lose a life")
         lives -= 1
 
         with open("data/count_file.json","w") as file:
@@ -167,20 +232,12 @@ def check():
             canvas.itemconfigure(himg, image=img4)
         elif lives == 0:
             canvas.itemconfigure(himg, image=img5)
-            messagebox.showinfo(f"The word was {secret_word}!\nSorry, You are out of lives. \nYou lose!\n")
+            lose()
 
     if "_" not in wc:
-        a = messagebox.askyesno(f"\nThe word is < {secret_word} >!\nYou won!\nDo you want to play again?")
-        if a == 1:
-            canvas.itemconfigure(himg, image=img0)
-            canvas.itemconfigure(word, text="")
-            text.delete(0, END)
-            s_word()
-        
-        else:
-            app.quit()
+        win()
 
-
+    text.delete(0,END)
 
 
 
@@ -188,6 +245,11 @@ def check():
 
 
 # *********************************************** GUI ********************************************
+
+
+
+
+
 app = Tk()
 app.title("Hangman")
 app.config(
