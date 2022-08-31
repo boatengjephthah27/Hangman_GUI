@@ -20,11 +20,59 @@ color = "#F7F6DC"
 
 
 
-# def s_word():
 
 
 
-# creating and storing words in json
+
+def win():
+    appp = Toplevel(app)
+    appp.title("You won!")
+    appp.config(
+        padx=15,
+        pady=15,
+    )
+
+    canv = Canvas(appp,
+        width=270,
+        height=230,
+    )
+    canv.grid(row=0, column=0, columnspan=2)
+
+
+    imgg = PhotoImage(file="images/winn.png")
+    canv.create_image(
+        130,125,
+        image=imgg
+    )
+
+    lab = Label(appp,
+        text= f"You Won",
+        font=("courier", 28, "bold"),
+        pady=10,
+        fg="red"
+    )
+    lab.grid(row=1, column=0, columnspan=2)
+
+    pg = Button(appp,
+        text="Play Again!",
+        padx=4,
+        pady=4
+    )
+    pg.grid(row=2, column=0)
+
+
+    qg = Button(appp,
+        text="Quit!",
+        padx=4,
+        pady=4
+    )
+    qg.grid(row=2, column=1)
+
+
+    appp.mainloop()
+
+
+
 
 
 def s_word():
