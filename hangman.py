@@ -136,8 +136,11 @@ def pAgain():
     canvas.itemconfigure(word, text="")
     text.delete(0, END)
     s_word()
-    appp.quit()
-    ap.quit()
+    
+    if win:
+        appp.quit()
+    else:    
+        ap.quit()
     
     
 
@@ -318,7 +321,7 @@ submit = Button(
 submit.grid(row=3, column=0)
 
 
-
+app.bind('<Return>', lambda event: check())
 
 
 
