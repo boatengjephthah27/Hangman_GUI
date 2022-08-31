@@ -33,15 +33,21 @@ def s_word():
 
     global secret_word
     secret_word = (ran.choice(words)).lower()
+    word_length = len(secret_word)
+    list__ = []
+    
+    for i in range(word_length):
+        list__.append("_")
     
     with open("data/count_file.json","w") as file:
             file_dict = {
                 "lives" : 5,
                 "secret_word" : secret_word,
-                "wc" : secret_word
+                "wc" : list__
             }
             json.dump(file_dict, file, indent=1)
 
+    # check()
 
 
 
@@ -53,60 +59,56 @@ def check():
         lives = int(data_file["lives"]) 
         secret_word = data_file["secret_word"] 
         wc = data_file["wc"] 
-        # data_file.update(file_dict)
+        
+        
+        
+        l = []
+    
+        for keys in data_file:
+            l.append(keys)
+                    
+        
             
-                
-    word_length = len(secret_word)
-    list_ = []
+        user_guess = text.get()
+        
+        if user_guess in wc:
+            messagebox.showwarning(f"Your guess ' {user_guess} ' is already in the list!")
+        
+        # user = 'w'
+        wl = len(secret_word)
+        
+        for letter_position in range(wl):
+            letter = secret_word[letter_position] 
+            if letter == user_guess:
+                wc[letter_position] = letter 
+        
+        # canvas.itemconfigure(word, text=outword)
+              
+        # print(outword)
+        # print(wc)
+    
     outword = ""
     
-    for i in range(word_length):
-        list_.append("_")
-    
-    with open("data/count_file.json","r") as file:
-        data_file = json.load(file)
-        file_dict = {"wc" : list_ } 
-        data_file.update(file_dict)
-    
-    for w in file_dict:
-        outword += f"{w} "
+    with open("data/count_file.json","w") as file:
+        data_file["wc"] = wc
+        json.dump(data_file, file) 
+
+
+    if user_guess in [a for a in secret_word]:
+        for w in wc:
+            outword += f"{w} "
         
-    canvas.itemconfigure(word, text=outword)        
+        canvas.itemconfigure(word, text=outword)
         
-    # lives = 5
     
-    user_guess = text.get()
-
-
-    if user_guess in list_:
-        messagebox.showwarning(f"Your guess ' {user_guess} ' is already in the list!")
-
-
-    for letter_position in range(word_length):
-        letter = secret_word[letter_position] 
-        if letter == user_guess:
-            list_[letter_position] = letter 
-            text.delete(0, END)
-    
-    
-    
-    outword = ""
-        
-    for w in list_:
-        outword += f"{w} "
-        
-    canvas.itemconfigure(word, text=list_)
-
-
-    if user_guess not in secret_word:
-        # print(f"\nYour guess {user_guess} is not in the word, \nYou lose a life")
+    if user_guess not in [a for a in secret_word]:
+        # print(f"\nYour guess {user} is not in the word, \nYou lose a life")
         lives -= 1
-        
-        with open("data/count_file.json","r") as file:
-            data_file = json.load(file)
-            file_dict = {"lives" : lives } 
-            data_file.update(file_dict)
-        
+
+        with open("data/count_file.json","w") as file:
+            data_file["lives"] = lives
+            json.dump(data_file, file) 
+
         if lives == 4:
             canvas.itemconfigure(himg, image=img1)
         elif lives == 3:
@@ -119,10 +121,16 @@ def check():
             canvas.itemconfigure(himg, image=img5)
             messagebox.showinfo(f"The word was {secret_word}!\nSorry, You are out of lives. \nYou lose!\n")
 
-    if "_" not in list_:
-        messagebox.showinfo(f"\nThe word is {secret_word}!\nYou won!\n")
+    if "_" not in wc:
+        a = messagebox.askyesno(f"\nThe word is < {secret_word} >!\nYou won!\nDo you want to play again?")
+        if a == 1:
+            canvas.itemconfigure(himg, image=img0)
+            canvas.itemconfigure(word, text="")
+            text.delete(0, END)
+            s_word()
         
-
+        else:
+            app.quit()
 
 
 
